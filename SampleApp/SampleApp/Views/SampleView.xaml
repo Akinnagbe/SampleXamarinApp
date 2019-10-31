@@ -1,0 +1,518 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="SampleApp.Views.SampleView"
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:ListCollection="clr-namespace:System.Collections.Generic;assembly=netstandard"
+    xmlns:combobox="clr-namespace:Syncfusion.XForms.ComboBox;assembly=Syncfusion.SfComboBox.XForms"
+    xmlns:converters="clr-namespace:SampleApp.Converters"
+    xmlns:ctl="clr-namespace:SampleApp.Controls"
+    xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+    xmlns:inputLayout="clr-namespace:Syncfusion.XForms.TextInputLayout;assembly=Syncfusion.Core.XForms"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:sfmasked="clr-namespace:Syncfusion.XForms.MaskedEdit;assembly=Syncfusion.SfMaskedEdit.XForms"
+    xmlns:tabView="clr-namespace:Syncfusion.XForms.TabView;assembly=Syncfusion.SfTabView.XForms"
+    xmlns:vm="clr-namespace:SampleApp.ViewModels.Base"
+    vm:ViewModelLocator.AutoWireViewModel="True"
+    BackgroundColor="Transparent"
+    NavigationPage.HasNavigationBar="False"
+    Visual="Material"
+    mc:Ignorable="d">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <Style TargetType="inputLayout:SfTextInputLayout">
+                <Setter Property="BackgroundColor" Value="Transparent" />
+                <Setter Property="ContainerType" Value="None" />
+                <Setter Property="ErrorColor" Value="#B00020" />
+                <Setter Property="FocusedColor" Value="#00AFA0" />
+                <Setter Property="InputViewPadding" Value="{OnPlatform Android=10, iOS=15}" />
+                <Setter Property="BackgroundColor" Value="Transparent" />
+            </Style>
+            <Style TargetType="Entry">
+                <Setter Property="BackgroundColor" Value="Transparent" />
+                <Setter Property="Visual" Value="Default" />
+            </Style>
+            <Style TargetType="combobox:SfComboBox">
+                <Setter Property="BackgroundColor" Value="Transparent" />
+                <Setter Property="HighlightedTextColor" Value="Red" />
+                <Setter Property="HighlightedTextFontAttributes" Value="Bold" />
+                <Setter Property="IsEditableMode" Value="True" />
+                <Setter Property="NoResultsFoundText" Value="Country not in list" />
+                <Setter Property="SuggestionMode" Value="StartsWith" />
+                <Setter Property="TextHighlightMode" Value="FirstOccurrence" />
+                <Setter Property="HeightRequest" Value="40" />
+            </Style>
+
+            <Style x:Key="steps" TargetType="StackLayout">
+                <Setter Property="Spacing" Value="{OnPlatform Android=10, iOS=0}" />
+            </Style>
+            <converters:StringLengthConverter x:Key="dataHasBeenEntered" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    <ContentPage.Content>
+        <Grid>
+            <ScrollView>
+                <StackLayout Padding="18,30,18,10" Spacing="0">
+
+                    <tabView:SfTabView
+                        x:Name="signuptabview"
+                        DisplayMode="NoHeader"
+                        EnableSwiping="False"
+                        SelectedIndex="0"
+                        SelectionChanged="Signuptabview_SelectionChanged"
+                        VerticalOptions="FillAndExpand"
+                        VisibleHeaderCount="1">
+
+                        <tabView:SfTabItem>
+                            <tabView:SfTabItem.Content>
+                                <StackLayout>
+                                    <StackLayout
+                                        x:Name="step1"
+                                        HorizontalOptions="CenterAndExpand"
+                                        Spacing="{OnPlatform Android=20,
+                                                             iOS=0}"
+                                        Style="{StaticResource Key=steps}"
+                                        VerticalOptions="CenterAndExpand">
+
+                                        <inputLayout:SfTextInputLayout Hint="Title">
+                                            <combobox:SfComboBox Visual="Material">
+                                                <combobox:SfComboBox.ComboBoxSource>
+                                                    <ListCollection:List x:TypeArguments="x:String">
+                                                        <x:String>Mr.</x:String>
+                                                        <x:String>Mrs.</x:String>
+                                                        <x:String>Miss</x:String>
+                                                    </ListCollection:List>
+                                                </combobox:SfComboBox.ComboBoxSource>
+                                            </combobox:SfComboBox>
+                                        </inputLayout:SfTextInputLayout>
+
+
+                                        <inputLayout:SfTextInputLayout
+                                            ErrorText="{Binding Step1.Errors, Converter={StaticResource validator}, ConverterParameter=ResidentCountry}"
+                                            HasError="{Binding Step1.Errors, Converter={StaticResource hasErrorCvt}, ConverterParameter=ResidentCountry}"
+                                            Hint="Country of Residence">
+                                            <combobox:SfComboBox
+                                                x:Name="comboBox"
+                                                DataSource="{Binding Countries}"
+                                                DisplayMemberPath="Name"
+                                                SelectedValue="{Binding Step1.ResidentCountry}"
+                                                SelectedValuePath="Name"
+                                                SelectionChanged="ResidentCountry_SelectionChanged"
+                                                Visual="Material" />
+                                        </inputLayout:SfTextInputLayout>
+                                        <inputLayout:SfTextInputLayout
+                                            ErrorText="{Binding Step1.Errors, Converter={StaticResource validator}, ConverterParameter=Nationality}"
+                                            HasError="{Binding Step1.Errors, Converter={StaticResource hasErrorCvt}, ConverterParameter=Nationality}"
+                                            Hint="Country of Origin">
+
+                                            <combobox:SfComboBox
+                                                x:Name="nationality"
+                                                DataSource="{Binding Countries}"
+                                                DisplayMemberPath="Name"
+                                                SelectedValue="{Binding Step1.Nationality}"
+                                                SelectedValuePath="Name"
+                                                SelectionChanged="Nationality_SelectionChanged"
+                                                Visual="Default" />
+
+                                        </inputLayout:SfTextInputLayout>
+                                    </StackLayout>
+                                </StackLayout>
+
+                            </tabView:SfTabItem.Content>
+                        </tabView:SfTabItem>
+                        <tabView:SfTabItem>
+                            <tabView:SfTabItem.Content>
+                                <StackLayout
+                                    x:Name="step2"
+                                    HorizontalOptions="CenterAndExpand"
+                                    Style="{StaticResource Key=steps}"
+                                    VerticalOptions="StartAndExpand">
+                                    <inputLayout:SfTextInputLayout
+                                        ErrorText="{Binding Step2.Errors, Converter={StaticResource validator}, ConverterParameter=SelectedTitle}"
+                                        HasError="{Binding Step2.Errors, Converter={StaticResource hasErrorCvt}, ConverterParameter=SelectedTitle}"
+                                        Hint="Title">
+                                        <combobox:SfComboBox SelectionChanged="Title_SelectionChanged">
+                                            <combobox:SfComboBox.ComboBoxSource>
+                                                <ListCollection:List x:TypeArguments="x:String">
+                                                    <x:String>Mr</x:String>
+                                                    <x:String>Mrs</x:String>
+                                                    <x:String>Miss</x:String>
+                                                </ListCollection:List>
+                                            </combobox:SfComboBox.ComboBoxSource>
+                                        </combobox:SfComboBox>
+                                    </inputLayout:SfTextInputLayout>
+                                    <inputLayout:SfTextInputLayout
+                                        ErrorText="{Binding Step2.Errors, Converter={StaticResource validator}, ConverterParameter=Firstname}"
+                                        HasError="{Binding Step2.Errors, Converter={StaticResource hasErrorCvt}, ConverterParameter=Firstname}"
+                                        HelperText="Your Firstname as in your BVN"
+                                        Hint="Firstname">
+                                        <Entry Text="{Binding Step2.Firstname}" />
+
+
+                                    </inputLayout:SfTextInputLayout>
+                                    <inputLayout:SfTextInputLayout
+                                        ErrorText="{Binding Step2.Errors, Converter={StaticResource validator}, ConverterParameter=Middlename}"
+                                        HasError="{Binding Step2.Errors, Converter={StaticResource hasErrorCvt}, ConverterParameter=Middlename}"
+                                        HelperText="Your Middlename as in your BVN"
+                                        Hint="Middlename">
+                                        <Entry Text="{Binding Step2.Middlename}" />
+                                    </inputLayout:SfTextInputLayout>
+                                    <inputLayout:SfTextInputLayout
+                                        ErrorText="{Binding Step2.Errors, Converter={StaticResource validator}, ConverterParameter=Surname}"
+                                        HasError="{Binding Step2.Errors, Converter={StaticResource hasErrorCvt}, ConverterParameter=Surname}"
+                                        HelperText="Your Surname as in your BVN"
+                                        Hint="Surname">
+                                        <Entry Text="{Binding Step2.Surname}" />
+                                    </inputLayout:SfTextInputLayout>
+
+                                    <inputLayout:SfTextInputLayout
+                                        ErrorText="{Binding Step2.Errors, Converter={StaticResource validator}, ConverterParameter=DateOfBirth}"
+                                        HasError="{Binding Step2.Errors, Converter={StaticResource hasErrorCvt}, ConverterParameter=DateOfBirth}"
+                                        HelperText="Your Date of Birth as in your BVN"
+                                        Hint="Date of Birth (dd/MM/yyyy)">
+                                        <sfmasked:SfMaskedEdit
+                                            Keyboard="Numeric"
+                                            Mask="00/00/0000"
+                                            Value="{Binding Step2.DateOfBirth}" />
+
+                                    </inputLayout:SfTextInputLayout>
+
+
+                                </StackLayout>
+                            </tabView:SfTabItem.Content>
+                        </tabView:SfTabItem>
+                        <tabView:SfTabItem>
+                            <tabView:SfTabItem.Content>
+
+                                <StackLayout
+                                    x:Name="step3"
+                                    Style="{StaticResource Key=steps}"
+                                    VerticalOptions="EndAndExpand">
+
+                                    <inputLayout:SfTextInputLayout
+                                        ErrorText="{Binding Step3.Errors, Converter={StaticResource validator}, ConverterParameter=SelectedGender}"
+                                        HasError="{Binding Step3.Errors, Converter={StaticResource hasErrorCvt}, ConverterParameter=SelectedGender}"
+                                        Hint="Gender">
+                                        <combobox:SfComboBox SelectionChanged="Gender_SelectionChanged">
+                                            <combobox:SfComboBox.ComboBoxSource>
+                                                <ListCollection:List x:TypeArguments="x:String">
+                                                    <x:String>Male</x:String>
+                                                    <x:String>Female</x:String>
+                                                </ListCollection:List>
+                                            </combobox:SfComboBox.ComboBoxSource>
+                                        </combobox:SfComboBox>
+                                    </inputLayout:SfTextInputLayout>
+
+                                    <inputLayout:SfTextInputLayout
+                                        ErrorText="{Binding Step3.Errors, Converter={StaticResource validator}, ConverterParameter=Phonenumber}"
+                                        HasError="{Binding Step3.Errors, Converter={StaticResource hasErrorCvt}, ConverterParameter=Phonenumber}"
+                                        Hint="Phonenumber">
+                                        <Entry Keyboard="Numeric" Text="{Binding Step3.Phonenumber}" />
+                                    </inputLayout:SfTextInputLayout>
+                                    <inputLayout:SfTextInputLayout
+                                        ErrorText="{Binding Step3.Errors, Converter={StaticResource validator}, ConverterParameter=Email}"
+                                        HasError="{Binding Step3.Errors, Converter={StaticResource hasErrorCvt}, ConverterParameter=Email}"
+                                        Hint="Email Address">
+                                        <Entry Keyboard="Email" Text="{Binding Step3.Email}" />
+                                    </inputLayout:SfTextInputLayout>
+                                    <inputLayout:SfTextInputLayout
+                                        CharMaxLength="11"
+                                        ErrorText="{Binding Step3.Errors, Converter={StaticResource validator}, ConverterParameter=BVN}"
+                                        HasError="{Binding Step3.Errors, Converter={StaticResource hasErrorCvt}, ConverterParameter=BVN}"
+                                        Hint="BVN"
+                                        ShowCharCount="True">
+                                        <Entry
+                                            Keyboard="Numeric"
+                                            MaxLength="11"
+                                            Text="{Binding Step3.BVN}" />
+                                    </inputLayout:SfTextInputLayout>
+                                    <inputLayout:SfTextInputLayout
+                                        ErrorText="{Binding Step3.Errors, Converter={StaticResource validator}, ConverterParameter=Address}"
+                                        HasError="{Binding Step3.Errors, Converter={StaticResource hasErrorCvt}, ConverterParameter=Address}"
+                                        Hint="Address">
+                                        <Entry Text="{Binding Step3.Address}" />
+                                    </inputLayout:SfTextInputLayout>
+
+                                </StackLayout>
+
+                            </tabView:SfTabItem.Content>
+                        </tabView:SfTabItem>
+
+                        <tabView:SfTabItem>
+                            <tabView:SfTabItem.Content>
+                                <StackLayout>
+                                    <StackLayout HorizontalOptions="CenterAndExpand" VerticalOptions="StartAndExpand">
+                                        <Label
+                                            FontSize="{StaticResource Large}"
+                                            HorizontalTextAlignment="Center"
+                                            Text="Verification Code"
+                                            TextColor="#000000" />
+                                        <Label
+                                            FontSize="{StaticResource Small}"
+                                            HorizontalTextAlignment="Center"
+                                            Text="Please enter the verification code sent to"
+                                            TextColor="#9b9b9b" />
+                                        <Label
+                                            FontSize="{StaticResource Small}"
+                                            HorizontalTextAlignment="Center"
+                                            TextColor="#358fe9">
+                                            <Label.FormattedText>
+                                                <FormattedString>
+                                                    <Span Text="{Binding Step3.Email}" />
+                                                    <!--<Span Text="{Binding Step4.Phonenumber}"></Span>-->
+                                                </FormattedString>
+                                            </Label.FormattedText>
+                                        </Label>
+                                    </StackLayout>
+                                    <StackLayout
+                                        x:Name="step4"
+                                        Spacing="10"
+                                        VerticalOptions="CenterAndExpand">
+                                        <inputLayout:SfTextInputLayout
+                                            ErrorText="{Binding Step4.Errors, Converter={StaticResource validator}, ConverterParameter=VerificationCode}"
+                                            HasError="{Binding Step4.Errors, Converter={StaticResource hasErrorCvt}, ConverterParameter=VerificationCode}"
+                                            Hint="OTP">
+                                            <Entry
+                                                Keyboard="Numeric"
+                                                MaxLength="6"
+                                                Text="{Binding Step4.VerificationCode}" />
+                                        </inputLayout:SfTextInputLayout>
+                                    </StackLayout>
+                                </StackLayout>
+                            </tabView:SfTabItem.Content>
+                        </tabView:SfTabItem>
+                        <tabView:SfTabItem>
+                            <tabView:SfTabItem.Content>
+                                <StackLayout>
+                                    <StackLayout
+                                        x:Name="step5"
+                                        Style="{StaticResource Key=steps}"
+                                        VerticalOptions="CenterAndExpand">
+                                        <inputLayout:SfTextInputLayout
+                                            EnablePasswordVisibilityToggle="True"
+                                            ErrorText="{Binding Step5.Errors, Converter={StaticResource validator}, ConverterParameter=Password}"
+                                            HasError="{Binding Step5.Errors, Converter={StaticResource hasErrorCvt}, ConverterParameter=Password}"
+                                            Hint="Password">
+                                            <Entry IsPassword="True" Text="{Binding Step5.Password}" />
+                                        </inputLayout:SfTextInputLayout>
+                                        <inputLayout:SfTextInputLayout
+                                            EnablePasswordVisibilityToggle="True"
+                                            ErrorText="{Binding Step5.Errors, Converter={StaticResource validator}, ConverterParameter=ConfirmPassword}"
+                                            HasError="{Binding Step5.Errors, Converter={StaticResource hasErrorCvt}, ConverterParameter=ConfirmPassword}"
+                                            Hint="Confirm Password">
+                                            <Entry IsPassword="True" Text="{Binding Step5.ConfirmPassword}" />
+                                        </inputLayout:SfTextInputLayout>
+
+                                        <inputLayout:SfTextInputLayout
+                                            CharMaxLength="4"
+                                            EnablePasswordVisibilityToggle="True"
+                                            ErrorText="{Binding Step5.Errors, Converter={StaticResource validator}, ConverterParameter=TransactionPin}"
+                                            HasError="{Binding Step5.Errors, Converter={StaticResource hasErrorCvt}, ConverterParameter=TransactionPin}"
+                                            Hint="Transaction Pin"
+                                            ShowCharCount="True">
+                                            <Entry
+                                                IsPassword="True"
+                                                Keyboard="Numeric"
+                                                MaxLength="4"
+                                                Text="{Binding Step5.TransactionPin}" />
+                                        </inputLayout:SfTextInputLayout>
+                                        <inputLayout:SfTextInputLayout
+                                            CharMaxLength="4"
+                                            EnablePasswordVisibilityToggle="True"
+                                            ErrorText="{Binding Step5.Errors, Converter={StaticResource validator}, ConverterParameter=ConfirmTransactionPin}"
+                                            HasError="{Binding Step5.Errors, Converter={StaticResource hasErrorCvt}, ConverterParameter=ConfirmTransactionPin}"
+                                            Hint="Confirm Transaction Pin"
+                                            ShowCharCount="True">
+                                            <Entry
+                                                IsPassword="True"
+                                                Keyboard="Numeric"
+                                                MaxLength="4"
+                                                Text="{Binding Step5.ConfirmTransactionPin}" />
+                                        </inputLayout:SfTextInputLayout>
+                                    </StackLayout>
+                                </StackLayout>
+                            </tabView:SfTabItem.Content>
+                        </tabView:SfTabItem>
+
+                        <tabView:SfTabItem>
+                            <tabView:SfTabItem.Content>
+                                <StackLayout>
+                                    <Label
+                                        HorizontalOptions="Center"
+                                        HorizontalTextAlignment="Center"
+                                        Text="Security Questions"
+                                        TextDecorations="Underline" />
+                                    <Label
+                                        FontSize="Small"
+                                        HorizontalOptions="Center"
+                                        HorizontalTextAlignment="Center"
+                                        Text="Max. of 3"
+                                        TextDecorations="Underline" />
+                                    <ctl:SecurityQuestionLayout
+                                        x:Name="step6"
+                                        BindableLayout.ItemsSource="{Binding SecurityQuestions}"
+                                        IsQuestionCompleted="{Binding IsQuestionComplete}"
+                                        VerticalOptions="CenterAndExpand">
+                                        <BindableLayout.ItemTemplate>
+                                            <DataTemplate>
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="Auto" />
+                                                        <ColumnDefinition Width="*" />
+                                                    </Grid.ColumnDefinitions>
+                                                    <CheckBox
+                                                        Grid.Column="0"
+                                                        CheckedChanged="CheckBox_CheckedChanged"
+                                                        IsChecked="{Binding IsSelected}"
+                                                        Color="Green">
+                                                        <CheckBox.Triggers>
+                                                            <MultiTrigger TargetType="CheckBox">
+                                                                <MultiTrigger.Conditions>
+                                                                    <BindingCondition Binding="{Binding Source={x:Reference step6}, Path=IsQuestionCompleted}" Value="True" />
+                                                                    <BindingCondition Binding="{Binding IsSelected}" Value="False" />
+                                                                </MultiTrigger.Conditions>
+                                                                <Setter Property="IsEnabled" Value="False" />
+                                                            </MultiTrigger>
+                                                        </CheckBox.Triggers>
+                                                    </CheckBox>
+                                                    <inputLayout:SfTextInputLayout
+                                                        Grid.Column="1"
+                                                        ErrorText="Required"
+                                                        Hint="{Binding Question}"
+                                                        IsEnabled="{Binding IsSelected}">
+                                                        <inputLayout:SfTextInputLayout.Triggers>
+                                                            <MultiTrigger TargetType="inputLayout:SfTextInputLayout">
+                                                                <MultiTrigger.Conditions>
+                                                                    <BindingCondition Binding="{Binding Answer, Converter={StaticResource dataHasBeenEntered}}" Value="true" />
+                                                                    <BindingCondition Binding="{Binding IsSelected}" Value="True" />
+                                                                </MultiTrigger.Conditions>
+                                                                <Setter Property="HasError" Value="True" />
+                                                            </MultiTrigger>
+                                                        </inputLayout:SfTextInputLayout.Triggers>
+                                                        <Entry Text="{Binding Answer}" />
+                                                    </inputLayout:SfTextInputLayout>
+                                                </Grid>
+                                            </DataTemplate>
+                                        </BindableLayout.ItemTemplate>
+
+                                    </ctl:SecurityQuestionLayout>
+                                </StackLayout>
+                            </tabView:SfTabItem.Content>
+                        </tabView:SfTabItem>
+                    </tabView:SfTabView>
+
+                    <StackLayout
+                        HorizontalOptions="FillAndExpand"
+                        Spacing="10"
+                        VerticalOptions="EndAndExpand">
+
+                        <Button
+                            Clicked="Next_Clicked"
+                            CornerRadius="{OnPlatform Android=30,
+                                                      iOS=25}"
+                            Style="{StaticResource greenBtn}"
+                            Text="{Binding ButtonText}"
+                            Visual="Default">
+                            <Button.Triggers>
+                                <DataTrigger
+                                    Binding="{Binding IsBusy}"
+                                    TargetType="Button"
+                                    Value="True">
+                                    <Setter Property="IsEnabled" Value="False" />
+                                </DataTrigger>
+                            </Button.Triggers>
+                        </Button>
+                        <Button
+                            Clicked="Back_Clicked"
+                            CornerRadius="{OnPlatform Android=30,
+                                                      iOS=25}"
+                            Style="{StaticResource whiteBtn}"
+                            Text="Back"
+                            Visual="Default">
+                            <Button.Triggers>
+                                <DataTrigger
+                                    Binding="{Binding IsBusy}"
+                                    TargetType="Button"
+                                    Value="True">
+                                    <Setter Property="IsEnabled" Value="False" />
+                                </DataTrigger>
+                                <DataTrigger
+                                    Binding="{Binding CurrentIndex}"
+                                    TargetType="Button"
+                                    Value="0">
+                                    <Setter Property="IsVisible" Value="False" />
+                                </DataTrigger>
+                            </Button.Triggers>
+                        </Button>
+                    </StackLayout>
+
+
+
+                </StackLayout>
+            </ScrollView>
+            <ContentView
+                x:Name="notificationView"
+                Padding="10,20"
+                BackgroundColor="#C0808080"
+                IsVisible="{Binding ShowErrorMessage}">
+                <ContentView.GestureRecognizers>
+                    <TapGestureRecognizer NumberOfTapsRequired="1" Tapped="TapGestureRecognizer_Tapped" />
+                </ContentView.GestureRecognizers>
+                <Frame
+                    Padding="0"
+                    BackgroundColor="White"
+                    BorderColor="#FFDD5347"
+                    CornerRadius="10"
+                    HasShadow="False"
+                    IsClippedToBounds="True"
+                    VerticalOptions="End">
+                    <Grid
+                        Padding="0"
+                        ColumnSpacing="0"
+                        HeightRequest="80">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="0.2*" />
+                            <ColumnDefinition Width="1" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <StackLayout
+                            Margin="1"
+                            BackgroundColor="#FFFFEBE9"
+                            HorizontalOptions="FillAndExpand"
+                            VerticalOptions="FillAndExpand">
+                            <Image
+                                Aspect="AspectFit"
+                                HorizontalOptions="CenterAndExpand"
+                                VerticalOptions="CenterAndExpand">
+                                <Image.Source>
+                                    <FontImageSource
+                                        FontFamily="{OnPlatform Android=MaterialIcons-Regular.ttf#,
+                                                                iOS=MaterialIcons-Regular}"
+                                        Glyph="&#xE888;"
+                                        Color="#FFE77E74" />
+                                </Image.Source>
+                            </Image>
+                        </StackLayout>
+
+                        <BoxView
+                            Grid.Column="1"
+                            BackgroundColor="#FFF3B1AC"
+                            VerticalOptions="FillAndExpand"
+                            WidthRequest="1" />
+                        <Label
+                            x:Name="errorLabel"
+                            Grid.Column="2"
+                            Margin="10,0,0,0"
+                            HorizontalOptions="Center"
+                            HorizontalTextAlignment="Center"
+                            Text="{Binding NotificationMessage}"
+                            TextColor="#FF838A94"
+                            VerticalOptions="Center"
+                            VerticalTextAlignment="Center" />
+                    </Grid>
+                </Frame>
+
+            </ContentView>
+        </Grid>
+    </ContentPage.Content>
+</ContentPage>
